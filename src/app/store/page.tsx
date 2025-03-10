@@ -3,6 +3,13 @@ import PageHeader from "@/components/PageHeader";
 import Pagination from "@/components/PagePagination";
 import { fetchApi } from "@/helpers/fetch-api";
 import { Book } from "@/interfaces/book";
+import { GetServerSideProps } from "next";
+
+interface StoreProps {
+  searchParams: {
+    page?: string;
+  };
+}
 
 const getBooks = async (page = 1, pageSize = 4) => {
   const path = "/books";
@@ -21,7 +28,7 @@ const getBooks = async (page = 1, pageSize = 4) => {
   return { data: data, pagination: meta.pagination };
 };
 
-const Store = async ({ searchParams }: { searchParams: { page?: string } }) => {
+const Store = async ({ searchParams }: StoreProps) => {
   const { page } = searchParams;
   let pageNumber = page ? parseInt(page) : 1;
   if (isNaN(pageNumber) || pageNumber < 1) {
@@ -48,4 +55,14 @@ const Store = async ({ searchParams }: { searchParams: { page?: string } }) => {
     </div>
   );
 };
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const searchParams = context.query;
+  return {
+    props: {
+      searchParams,
+    },
+  };
+};
+
 export default Store;
