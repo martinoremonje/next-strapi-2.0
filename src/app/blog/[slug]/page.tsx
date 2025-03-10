@@ -35,6 +35,7 @@ export default async function Slug(props: {
   }
 
   const { title, description, publishedAt, image, body } = post;
+  console.log(body[0].children[0].text)
   const { url, width, height } = image.formats.medium;
 
   return (
@@ -52,10 +53,8 @@ export default async function Slug(props: {
         {description}
       </p>
       <div className="prose">
-        {/* Este error en particular está codificado en TypeScript. El equipo de React está trabajando con el equipo de TypeScript para resolver esto. */}
-        {/* https://github.com/vercel/next.js/issues/42292 */}
-        {/* @ts-expect-error Server Component */}
-        <MDXRemote source={body} />
+        
+        {body[0].children[0].text}
       </div>
     </div>
   );
