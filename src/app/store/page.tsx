@@ -6,7 +6,7 @@ import { Book } from "@/interfaces/book";
 import { Metadata } from "next";
 
 interface StoreProps {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const getBooks = async (page = 1, pageSize = 4) => {
@@ -26,9 +26,9 @@ const getBooks = async (page = 1, pageSize = 4) => {
   return { data: data, pagination: meta.pagination };
 };
 
-export async function generateMetadata({ params }: { params: StoreProps['searchParams'] }): Promise<Metadata> {
-  const { page } = await params;
-  let pageNumber = page ? parseInt(page) : 1;
+export async function generateMetadata({ searchParams }: { searchParams: StoreProps['searchParams'] }): Promise<Metadata> {
+  const { page } = await searchParams;
+  let pageNumber = page && !Array.isArray(page) ? parseInt(page) : 1;
   if (isNaN(pageNumber) || pageNumber < 1) {
     pageNumber = 1;
     console.log(
@@ -43,14 +43,12 @@ export async function generateMetadata({ params }: { params: StoreProps['searchP
 }
 
 export default async function Store({
-  children,
-  params,
+  searchParams,
 }: {
-  children: React.ReactNode;
-  params: StoreProps['searchParams'];
+  searchParams: StoreProps['searchParams'];
 }) {
-  const { page } = await params;
-  let pageNumber = page ? parseInt(page) : 1;
+  const { page } = await searchParams;
+  let pageNumber = page && !Array.isArray(page) ? parseInt(page) : 1;
   if (isNaN(pageNumber) || pageNumber < 1) {
     pageNumber = 1;
     console.log(
